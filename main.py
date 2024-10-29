@@ -4,10 +4,10 @@
 import csv
 
 # 전역 변수
-assembler_coef = 0.75
-furnace_coef = 2
-terminal_ingredients = ["철 판", "구리 판", "돌", "석탄"]
-denying = ["", "철 광석", "구리 광석", "돌", "석탄"]
+assembler_coef = 0.75 # 조립기계2 계수
+furnace_coef = 2 # 강철 용광로 계수
+terminal_ingredients = ["철 판", "구리 판", "돌", "석탄"] # 말단 재료; 이 이상 조사하지 않음
+denying = ["", "철 광석", "구리 광석", "돌", "석탄"] #이 재료들은 재귀 탐색 하지 않음
 
 
 
@@ -31,28 +31,13 @@ def convert_to_terminal_ingredients(row):
         for j in range(0, len(terminal_ingredients)):
             if (row[i] == terminal_ingredients[j]):
                 count[j] += float(row[i+1])
-            if (row[i] in denying):
+            elif (row[i] in denying):
                 continue
             else:
                 count[j] += convert_to_terminal_ingredients(find_row(row[i]))[j] * float(row[i+1])
     for k in range(len(terminal_ingredients)):
         count[k] /= divider
     return count
-"""
-        if row[i] == "철 판":
-            iron += float(row[i+1])
-        elif row[i] == "구리 판":
-            copper += float(row[i+1])
-        elif ((row[i] in terminal_ingredient) or (row[i] == "")):
-            continue
-        else: # 재귀적으로 호출
-            iron += convert_to_iron_and_copper(find_row(row[i]))[0] * float(row[i+1])
-            copper += convert_to_iron_and_copper(find_row(row[i]))[1] * float(row[i+1])
-
-    iron /= divider
-    copper /= divider
-    return iron, copper
-"""
 
 
 # 목표 아이템을 1초에 count개 만들 때, 필요한 제작기와 개수
@@ -82,14 +67,7 @@ def print_assembler(item, count):
 # 재귀적으로 필요한 제작기 개수 print
 def print_assembler_recursive(item, count):
     row = find_row(item)
-    crafter, assembler_count = assembler_per_count(item, count)
-    print(f"1초에 {item} {count}개 만들 때 필요한 {crafter} 개수: {round(assembler_count, 3)}개 (필요 재료: ", end="")
-    for i in range(4, 16, 2):
-        if (row[i] != ""):
-            if ((i != 4) and (row[i] != "")):
-                print(", ", end="")
-            print(f"{row[i]} {round(count * float(row[i+1]), 3)}개", end="")
-    print(")")
+    print_assembler(item, count)
     for i in range(4, 16, 2):
         if not((row[i] in terminal_ingredients) or (row[i] == "")):
             print_assembler_recursive(row[i], count * float(row[i+1]))
