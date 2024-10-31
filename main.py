@@ -6,8 +6,9 @@ import csv
 # 전역 변수
 assembler_coef = 0.75 # 조립기계2 계수
 furnace_coef = 2 # 강철 용광로 계수
-terminal_ingredients = ["철 판", "구리 판", "돌", "석탄"] # 말단 재료; 이 이상 조사하지 않음
-denying = ["", "철 광석", "구리 광석", "돌", "석탄"] #이 재료들은 재귀 탐색 하지 않음
+chemical_coef = 1 # 화학 공장 계수
+terminal_ingredients = ["철 판", "구리 판", "돌", "석탄", "석유 가스", "플라스틱 막대", "황"] # 말단 재료; 이 이상 조사하지 않음
+denying = ["", "철 광석", "구리 광석", "돌", "석탄", "석유 가스", "황"] #이 재료들은 재귀 탐색 하지 않음
 
 
 
@@ -43,12 +44,14 @@ def convert_to_terminal_ingredients(row):
 # 목표 아이템을 1초에 count개 만들 때, 필요한 제작기와 개수
 def assembler_per_count(item, count):
     row = find_row(item)
-    count
+    result = 0.0
     if row[1] == "조립기계":
-        count = (count * float(row[3])) / (float(row[2]) * assembler_coef)
+        result = (count * float(row[3])) / (float(row[2]) * assembler_coef)
     elif row[1] == "용광로":
-        count = (count * float(row[3])) / (float(row[2]) * furnace_coef)
-    return row[1], count
+        result = (count * float(row[3])) / (float(row[2]) * furnace_coef)
+    elif row[1] == "화학공장":
+        result = (count * float(row[3])) / (float(row[2]) * chemical_coef)
+    return row[1], result
 
 
 # 필요한 제작기 개수 print
@@ -60,7 +63,7 @@ def print_assembler(item, count):
         if (row[i] != ""):
             if ((i != 4) and (row[i] != "")):
                 print(", ", end="")
-            print(f"{row[i]} {round(count * float(row[i+1]), 3)}개", end="")
+            print(f"{row[i]} {round(count * float(row[i+1]) / float(row[2]), 3)}개", end="")
     print(")")
 
 
@@ -70,7 +73,7 @@ def print_assembler_recursive(item, count):
     print_assembler(item, count)
     for i in range(4, 16, 2):
         if not((row[i] in terminal_ingredients) or (row[i] == "")):
-            print_assembler_recursive(row[i], count * float(row[i+1]))
+            print_assembler_recursive(row[i], count * float(row[i+1]) / float(row[2]))
 
 
 # 한번에 다 출력하는 함수
@@ -78,9 +81,9 @@ def print_all_info(item, count):
     row = find_row(item)
     terminal = convert_to_terminal_ingredients(row)
     print(row)
-    for element in terminal:
-        print(f"{terminal_ingredients[terminal.index(element)]}: {element}개", end="")
-        if (terminal.index(element) != len(terminal) - 1):
+    for i in range(len(terminal)):
+        print(f"{terminal_ingredients[i]}: {terminal[i]}개", end="")
+        if (i != len(terminal) - 1):
             print(", ", end="")
     print("")
     print_assembler_recursive(item, count)
@@ -88,11 +91,7 @@ def print_all_info(item, count):
 
 
 def main():
-    print_all_info("자동화 과학 팩", 0.75)
-    print_all_info("물류 과학 팩", 0.75)
-    print_all_info("군사 과학 팩", 0.75)
-
-
+    print_all_info("화학 과학 팩", 1.5)
 
 if __name__ == "__main__":
     main()
