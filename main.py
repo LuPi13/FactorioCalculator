@@ -4,8 +4,10 @@ import csv
 assembler_coef = 0.75 # 조립기계2 계수
 furnace_coef = 2 # 강철 용광로 계수
 chemical_coef = 1 # 화학 공장 계수
-terminal_ingredients = ["물", "철 광석", "철 판", "구리 판", "돌", "석탄", "전자 회로", "석유 가스", "플라스틱 막대", "황", "강철 판", "고급 회로", "엔진 유닛"]
-# ㄴ말단 재료; 이 이상 조사하지 않음, 메인버스 올려져있는거나 액체류
+terminal_ingredients = ["물", "석유 가스", "윤활유", 
+                        "철 광석", "철 판", "구리 판", "돌", "석탄", "전자 회로", "플라스틱 막대", 
+                        "황", "강철 판", "고급 회로", "엔진 유닛", "콘크리트", "정제된 콘크리트"]
+# ㄴ말단 재료; 이 이상 조사하지 않음, 메인버스에 올려져 있는거나 액체류
 
 
 
@@ -76,7 +78,7 @@ def print_assembler_recursive(item, count):
 # 한번에 다 출력하는 함수
 def print_all_info(item, count):
     row = find_row(item)
-    print(row)
+    #print(row)
     """ 별로 쓸데 없음, 이건 인게임에서 나옴
     terminal = convert_to_terminal_ingredients(row)
     for i in range(len(terminal)):
@@ -91,8 +93,7 @@ def print_all_info(item, count):
 
 
 def main():
-    print_all_info("정제된 콘크리트", 7.5)
-    print_all_info("콘크리트", 7.5 + 15)
+    print_all_info("다용도 과학 팩", 1.5)
 
 if __name__ == "__main__":
     main()
